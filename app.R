@@ -7,7 +7,8 @@ library(leaflet.extras)
 library(readxl)
 library(ggplot2)
 
-data <- read_excel("C:/Users/Natalia/Desktop/excel.xlsx")
+
+data <- read_excel("C:/Users/Natalia/Desktop/excel2.xlsx")
 
 ## UI ##
 
@@ -48,7 +49,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                            tabPanel("Correlación", 
                                     mainPanel(
                                         #correlacion
-                                        plotOutput("corrPlot"),),
+                                        plotOutput("corrPlot")),
                                     sidebarPanel(
                                         #opciones correlacion
                                         selectInput("variablex", h4("Variable x:"),
@@ -138,7 +139,7 @@ server <- function(input, output, session) {
     
     #usamos la funcion observe para hacer el checkbox dinamico. Cuando pulso la primera vez presenta el filtro, y para que al desmarcar desaparezca el filtro tengo que llamar de nuevo al mapa.
     observe({
-        data$web <- ifelse(data$P3.2 != 0, "no", ifelse(data$P3.1 !=0, "si", ifelse(data$P3.3 !=0, "Ns/nc", "otro"))) #defino mi filtro
+        data$web <- ifelse(data$P3.2 != 0, "no", ifelse(data$P3.1 !=0, "si", "Ns/nc")) #defino mi filtro
         proxy <- leafletProxy("mymap", data = data) #llamoo al mapa
         proxy %>% clearControls()#limpio  la leyenda
         #updateCheckboxInput(session, "P4", value= FALSE) #con esto pongo a false P4 osea que lo desmarco pero queda en el estado inicial en vez de representar el P3
@@ -162,7 +163,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$presonline <- ifelse(data$P4 ==3 , "3", ifelse(data$P4 ==2, "2", ifelse(data$P4 ==1, "1", "otro")))#recorro todas las filas de la columna que diga 
+        data$presonline <- ifelse(data$P4 ==0 , "0", ifelse(data$P4 ==1 , "1", ifelse(data$P4 ==2, "2", ifelse(data$P4 >=3, "3 o +", "Ns/nc"))))#recorro todas las filas de la columna que diga 
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P4) {
@@ -184,7 +185,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$tonline <- ifelse(data$P5.2 != 0, "no", ifelse(data$P5.1 !=0, "si", ifelse(data$P5.2!=0,"Ns/nc", "otro")))
+        data$tonline <- ifelse(data$P5.2 != 0, "no", ifelse(data$P5.1 !=0, "si", "Ns/nc"))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P5) {
@@ -206,7 +207,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$pago <- ifelse(data$P6 == 0, "0", ifelse(data$P6 ==1, "1", "Ns/nc"))
+        data$pago <- ifelse(data$P6 == 0, "0", ifelse(data$P6 ==1, "1",ifelse(data$P6 ==2, "2", ifelse(data$P6 ==3, "3",ifelse(data$P6 ==4, "4",ifelse(data$P6 ==5, "5",ifelse(data$P6 ==6, "6","Ns/nc")))))))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P6) {
@@ -228,7 +229,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$envios <- ifelse(data$P7.1 !=0, "no envio", ifelse(data$P7.2 !=0, "trabajador", ifelse(data$P7.3 !=0, "nuevo trabajador", ifelse(data$P7.4 !=0, "mensajeria", ifelse(data$P7.5 !=0, "last mile", "other")))))
+        data$envios <- ifelse(data$P7.1 !=0, "no envio", ifelse(data$P7.2 !=0, "trabajador", ifelse(data$P7.3 !=0, "nuevo trabajador", ifelse(data$P7.4 !=0, "mensajeria", ifelse(data$P7.5 !=0, "last mile", "Ns/nc")))))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P7) {
@@ -250,7 +251,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$pedido <- ifelse(data$P8 ==3, "3", ifelse(data$P8 ==2, "2", ifelse(data$P8 ==1, "1", ifelse(data$P8 ==0, "0", "Ns/nc"))))
+        data$pedido <- ifelse(data$P8 ==6, "6",ifelse(data$P8 ==5, "5",ifelse(data$P8 ==4, "4",ifelse(data$P8 ==3, "3", ifelse(data$P8 ==2, "2", ifelse(data$P8 ==1, "1", ifelse(data$P8 ==0, "0", "Ns/nc")))))))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P8) {
@@ -272,7 +273,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$RRSS <- ifelse(data$P9 ==3, "3", ifelse(data$P9 ==2, "2", ifelse(data$P9 ==1, "1", ifelse(data$P9 ==0, "0", "Ns/nc"))))
+        data$RRSS <- ifelse(data$P9 ==6, "6",ifelse(data$P9 ==5, "5",ifelse(data$P9 ==4, "4",ifelse(data$P9 ==3, "3", ifelse(data$P9 ==2, "2", ifelse(data$P9 ==1, "1", ifelse(data$P9 ==0, "0", "Ns/nc")))))))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P9) {
@@ -294,7 +295,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$importancia <- ifelse(data$P10.1 !=0, "1", ifelse(data$P10.2 !=0, "2", ifelse(data$P10.3 !=0, "3", ifelse(data$P10.4 !=0, "4", ifelse(data$P10.5 !=0, "5", "0")))))
+        data$importancia <- ifelse(data$P10.1 !=0, "1", ifelse(data$P10.2 !=0, "2", ifelse(data$P10.3 !=0, "3", ifelse(data$P10.4 !=0, "4", ifelse(data$P10.5 !=0, "5", "Ns/nc")))))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P10) {
@@ -316,7 +317,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$covid <- ifelse(data$P11.1 !=0, "Si", ifelse(data$P11.2 !=0, "No",ifelse(data$P11.3 !=0,  "Ns/nc","a")))
+        data$covid <- ifelse(data$P11.1 !=0, "Si", ifelse(data$P11.2 !=0, "No","Ns/nc"))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P11) {
@@ -360,7 +361,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$conocimiento <- ifelse(data$P13.1 !=0, "Si", ifelse(data$P13.2 !=0, "Se a quien acudir",ifelse(data$P13.3 !=0,  "Aprendere","Ns/nc")))
+        data$conocimiento <- ifelse(data$P13.1 !=0, "Si", ifelse(data$P13.2 !=0, "Se a quien acudir",ifelse(data$P13.3 !=0,  "Aprendere",ifelse(data$P13.4 !=0,  "No sé","Ns/nc"))))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P13) {
@@ -382,7 +383,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$inversion <- ifelse(data$P14 <= 100, "0-100", ifelse(data$P14 <= 300 | data$P14 >100, "101-300", ifelse(data$P14 <= 1000 | data$P14 >300, "301-1000",ifelse(data$P14 <= 3000 | data$P14 >1000, "1001-3000",ifelse(data$P14>3000, "+3000", "other")))))
+        data$inversion <- ifelse(data$P14 == 0, "0", ifelse((data$P14 > 0 & data$P14 <=300), "1-300",ifelse((data$P14 > 1000 & data$P14 <=3000), "1001-3000", ifelse((data$P14 > 300 & data$P14 <=1000), "301-1000",ifelse(data$P14>3000, "+3000", "other")))))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P14) {
@@ -404,7 +405,7 @@ server <- function(input, output, session) {
         }
     })
     observe({
-        data$invfutura <- ifelse(data$P15 <= 100, "0-100", ifelse(data$P15 <= 300 | data$P15 >100, "101-300", ifelse(data$P15 <= 1000 | data$P15 >300, "301-1000",ifelse(data$P15 <= 3000 | data$P15 >1000, "1001-3000",ifelse(data$P15>3000, "+3000", "other")))))
+        data$invfutura <- ifelse(data$P15 <= 100, "0-100", ifelse((data$P15 <= 300 & data$P15 >100), "101-300", ifelse((data$P15 <= 1000 & data$P15 >300), "301-1000",ifelse((data$P15 <= 3000 & data$P15 >1000), "1001-3000",ifelse(data$P15>3000, "+3000", "Ns/nc")))))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P15) {
@@ -427,7 +428,7 @@ server <- function(input, output, session) {
         
     })
     observe({
-        data$tiempo <- ifelse(data$P16 <= 3, "0-3", ifelse((data$P16 <= 10 | data$P16 >3), "4-10", ifelse((data$P16 <= 15 | data$P16 >10), "11-15",ifelse((data$P16 <= 30 | data$P16 >15), "16-30", "+30"))))
+        data$tiempo <- ifelse(data$P16 <= 3, "0-3", ifelse((data$P16 <= 10 & data$P16 >3), "4-10", ifelse((data$P16 <= 15 & data$P16 >10), "11-15",ifelse((data$P16 <= 30 &  data$P16 >15), "16-30", ifelse(data$P16 >30, "+30", "Ns/nc")))))
         proxy <- leafletProxy("mymap", data = data)
         proxy %>% clearMarkers()
         if (input$P16) {
